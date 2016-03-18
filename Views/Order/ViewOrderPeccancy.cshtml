@@ -1,0 +1,63 @@
+﻿@model IEnumerable<TCTE.Models.OrderDetail>
+>
+@{
+	ViewBag.Title = "处理条数";
+	Layout = "~/Views/Shared/_FormListLayout.cshtml";
+}
+
+@section ListHeader{
+	<th>
+		订单编号
+	</th>
+	<th>
+		决定书编号
+	</th>
+	<th>
+		违法时间
+	</th>
+	<th>
+		违法地点
+	</th>
+	<th>
+		违法行为
+	</th>
+	<th>
+		扣分
+	</th>
+	<th>
+		罚款金额
+	</th>
+	<th>
+		是否交费
+	</th>
+	<th>银行流水号</th>
+	<th>违法人身份证号</th>
+	<th>扣分人身份证号</th>
+}
+
+@section ListBody{
+
+	@foreach ( var item in Model )
+	{
+		<tr>
+			<td>@Html.DisplayFor( a => item.Order.Code )</td>
+			<td>@Html.DisplayFor( a => item.DecisionNumber )</td>
+			<td>@Html.DisplayFor( a => item.PeccancyTime )</td>
+			<td>@Html.DisplayFor( a => item.PeccancyAddress )</td>
+			<td>@Html.DisplayFor( a => item.PeccancyBehavior )</td>
+			<td>@Html.DisplayFor( a => item.Deduction )</td>
+			<td>@Html.DisplayFor( a => item.Money )</td>
+			<td>@(item.IsPay.HasValue ? ( item.IsPay.Value ? "是" : "否" ) : "-")</td>
+			<td>@Html.DisplayFor( a => item.BankSequenceNumber )</td>
+			<td>@Html.DisplayFor( a => item.PeccancyPersonNo )</td>
+			<td>@Html.DisplayFor( a => item.HandlePersonNo )</td>
+		</tr>
+	}
+}
+
+@section scripts{
+	<script>
+		$( "#link_AddData" ).hide();
+	</script>
+}
+

@@ -310,7 +310,7 @@ var public_vars = public_vars || {};
 			{
 				var $this = $(el),
 					opts = {
-						allowClear: attrDefault($this, 'allowClear', false)
+						allowClear: attrDefault($this, 'allowClear', true)
 					};
 				
 				$this.select2(opts);
@@ -415,7 +415,40 @@ var public_vars = public_vars || {};
 						format: attrDefault($this, 'format', 'MM/DD/YYYY'),
 						timePicker: attrDefault($this, 'timePicker', false),
 						timePickerIncrement: attrDefault($this, 'timePickerIncrement', false),
-						separator: attrDefault($this, 'separator', ' - '),
+						separator: attrDefault( $this, 'separator', ' - ' ),
+						"locale": {
+							"format": "MM/DD/YYYY",
+							"separator": " - ",
+							"applyLabel": "确定",
+							"cancelLabel": "取消",
+							"fromLabel": "从",
+							"toLabel": "到",
+							"customRangeLabel": "自定义",
+							"daysOfWeek": [
+								"日",
+								"一",
+								"二",
+								"三",
+								"四",
+								"五",
+								"六"
+							],
+							"monthNames": [
+								"一月",
+								"二月",
+								"三月",
+								"四月",
+								"五月",
+								"六月",
+								"七月",
+								"八月",
+								"九月",
+								"十月",
+								"十一月",
+								"十二月"
+							],
+							"firstDay": 1
+						}
 					},
 					min_date = attrDefault($this, 'minDate', ''),
 					max_date = attrDefault($this, 'maxDate', ''),

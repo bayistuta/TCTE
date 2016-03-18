@@ -1,0 +1,141 @@
+﻿@model TCTE.ViewModel.OrderCountViewModel
+@{
+	ViewBag.Title = "订单统计";
+	Layout = "~/Views/Shared/_FormListLayout.cshtml";
+}
+
+@section query {
+	<form action="" method="post" class="form-horizontal" id="queryForm">
+		<div class="form-group">
+			@if ( TCTE.Utility.RoleHelper.IsInRole( TCTE.Utility.SystemRole.SUPER_ADMIN ) )
+			{
+				<div class="col-md-3">
+					@Html.DropDownListFor( a => a.CompanyId, ViewBag.Companies as IEnumerable<SelectListItem>, "", new { id = "companyId", placeholder = "商家", @class = "form-control" } )
+				</div>
+			}
+			<div class="col-md-2">
+				@Html.DropDownListFor( a => a.SalesManId, ViewBag.SalesMen as IEnumerable<SelectListItem>, "", new { id = "salesManId", placeholder = "业务员", @class = "form-control" } )
+			</div>
+			<div class="col-md-3">
+				@Html.DropDownListFor( a => a.TerminalId, ViewBag.Terminals as IEnumerable<SelectListItem>, "", new { id = "terminalId", placeholder = "设备", @class = "form-control" } )
+			</div>
+			<div class="col-md-3">
+				@Html.TextBoxFor( a => a.DateRange, new { @class = "form-control daterange", data_format = "YYYY/MM/DD", placeholder = "起止日期", style = "height:37px" } )
+			</div>
+			<div class="col-md-1">
+				<input class="btn btn-info btn-block" type="submit" value="查询" style="height:37px" />
+			</div>
+		</div>
+	</form>
+}
+
+@section ListHeader {
+	@if ( TCTE.Utility.RoleHelper.IsInRole( TCTE.Utility.SystemRole.SUPER_ADMIN ) )
+	{
+		<th>
+			商家
+		</th>
+	}
+	<th>
+		业务员
+	</th>
+	<th>
+		订单数量
+	</th>
+	<th>
+		处理条数
+	</th>
+}
+
+@section ListBody{
+	@if ( Model != null && Model.Result != null )
+	{
+		foreach ( var item in Model.Result )
+		{
+			<tr>
+				@if ( TCTE.Utility.RoleHelper.IsInRole( TCTE.Utility.SystemRole.SUPER_ADMIN ) )
+				{
+					<td>
+						@item.SalesMan.Company.Name
+					</td>
+				}
+				<td>
+					@item.SalesMan.Name
+				</td>
+				<td>
+					@using ( Html.BeginForm( "ViewOrdersOfSalesMan", "Order", new { SalesManId = item.SalesMan.Id, TerminalId = Model.TerminalId, CompanyId = Model.CompanyId, DateRange = Model.DateRange }, FormMethod.Post, new { target = "_blank" } ) )
+					{
+						<button title="查看订单列表" class="btn btn-info btn-sm btn-icon">@item.OrderCount</button>
+					}
+				</td>
+				<td>
+					@using ( Html.BeginForm( "ViewOrderPeccancy", "Order", new { SalesManId = item.SalesMan.Id, TerminalId = Model.TerminalId, CompanyId = Model.CompanyId, DateRange = Model.DateRange }, FormMethod.Post, new { target = "_blank" } ) )
+					{
+						<button title="查看处理条数" class="btn btn-info btn-sm btn-icon">@item.DoneCount</button>
+					}
+				</td>
+			</tr>
+		}
+	}
+}
+
+@*@section ExportExel {
+	@if ( Model != null )
+	{
+		using ( Html.BeginForm( "ExportExcel", "Order", new { SalesManId = Model.SalesManId, TerminalId = Model.TerminalId, CompanyId = Model.CompanyId, DateRange = Model.DateRange }, FormMethod.Post, new { target = "_blank" } ) )
+		{
+			<button class="btn btn-info">导出Excel</button>
+		}
+	}
+}*@
+
+@section styles {
+	<link href="~/assets/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" />
+	<link href="~/assets/js/select2/select2.css" rel="stylesheet" />
+	<link href="~/assets/js/select2/select2-bootstrap.css" rel="stylesheet" />
+}
+
+@section scripts{
+	<script src="~/assets/js/moment.min.js"></script>
+	<script src="~/assets/js/daterangepicker/daterangepicker.js"></script>
+	<script src="~/assets/js/select2/select2.min.js"></script>
+	<script src="~/assets/js/select2/select2_locale_zh-CN.js"></script>
+	<script>
+		jQuery( document ).ready( function ( $ ) {
+
+			$( "#link_AddData" ).hide();
+
+			// 初始化select2
+			var salesManIdSelect2 = $( "#salesManId" ).select2( { allowClear: true } );
+			var terminalIdSelect2 = $( "#terminalId" ).select2( { allowClear: true } );
+			var companyIdSelect2 = $( "#companyId" ).select2( { allowClear: true } );
+
+			// 商家 > 业务员 | 设备 级联
+			companyIdSelect2.change( function () {
+				if ( this.value ) {
+					$.getJSON(
+						"@Url.Action( "CompanyCascade", "AjaxQuery" )",
+						{ "companyId": this.value },
+						function ( data ) {
+							var options = "";
+							$( data.SalesMen ).each( function ( i, e ) {
+								options += ( '<option value="' + e.Id + '">' + e.Name + '</option>' );
+							} );
+							$( "#salesManId" )[0].length = 1;
+							$( options ).appendTo( "#salesManId" );
+							salesManIdSelect2.val( null ).trigger( "change" );
+
+							options = "";
+							$( data.Terminals ).each( function ( i, e ) {
+								options += ( '<option value="' + e.Id + '">' + e.Code + '</option>' );
+							} );
+							$( "#terminalId" )[0].length = 1;
+							$( options ).appendTo( "#terminalId" );
+							salesManIdSelect2.val( null ).trigger( "change" );
+						} );
+				}
+			} );
+		} );
+
+	</script>
+}

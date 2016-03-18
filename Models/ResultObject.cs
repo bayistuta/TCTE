@@ -17,7 +17,11 @@ namespace TCTE.Models
         public static readonly int InvalidPersonCode = 108;
         public static readonly int NotFound = 404;
         public static readonly int OK = 200;
-        public static readonly int ServerError = 500;
+		public static readonly int ServerError = 500;
+		public static readonly int DuplicatePreOrder = 601;
+		public static readonly int ChangePreOrderFailure = 602;
+		public static readonly int CancelPreOrderFailure = 603;
+
         public int StatusCode { get; set; }
         public string Description { get; set; }
         public object Result { get; set; }
