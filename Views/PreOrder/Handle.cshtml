@@ -1,0 +1,194 @@
+﻿@model TCTE.ViewModel.Car
+@using TCTE.Utility
+
+@{
+	ViewBag.Title = "处理预约";
+	Layout = "~/Views/Shared/_FormLayout.cshtml";
+}
+@if (Model.PeccancyInfos!=null && Model.PeccancyInfos.Count > 0)
+{
+	<div id="preOrderInfo">
+		<h4>
+			预约单号：@ViewBag.PreOrder.PreOrderNumber &nbsp;&nbsp;
+			客户姓名：@ViewBag.PreOrder.Name &nbsp;&nbsp;
+			联系电话：@ViewBag.PreOrder.Phone
+		</h4>
+	</div>
+	<hr />
+	<div class="clearfix">
+		<div class="pull-right">
+			@*<input type="hidden" name="PlateNumber" value="@(ViewBag.PlateNumber)" />
+				<input type="hidden" name="VIN" value="@ViewBag.VIN" />*@
+			<button id="btnDriverQuery" class="btn btn-primary">驾驶员信息查询</button>
+			<input type="button" value="接受预约" id="btnApprove" class="btn btn-info" />
+			<input type="button" value="拒绝预约" id="btnRefuse" class="btn btn-danger" />
+			<script>
+				$( document ).ready( function () {
+					$( "#modalQueryDriver" ).appendTo( "body" );
+					$( "#btnDriverQuery" ).click( function () {
+						$( '#modalQueryDriver' ).modal();
+						return false;
+					} );
+					$( "#modalRefuse" ).appendTo( "body" );
+					$( "#btnRefuse" ).click( function () {
+						$( '#modalRefuse' ).modal();
+						return false;
+					} );
+					$( "#modalApprove" ).appendTo( "body" );
+					$( "#btnApprove" ).click( function () {
+						$( '#modalApprove' ).modal();
+						return false;
+					} );
+				} );
+			</script>
+		</div>
+		<div id="carInfo" class="pull-left">
+			<dl class="dl-horizontal">
+				<dt>@Html.DisplayNameFor( m => m.Type )</dt>
+				<dd>@Html.DisplayFor( m => m.Type )</dd>
+				<dt>@Html.DisplayNameFor( m => m.PlatNumber )</dt>
+				<dd>@Html.DisplayFor( m => m.PlatNumber )</dd>
+				<dt>@Html.DisplayNameFor( m => m.Purpose )</dt>
+				<dd>@Html.DisplayFor( m => m.Purpose )</dd>
+				<dt>@Html.DisplayNameFor( m => m.Owner )</dt>
+				<dd>@Html.DisplayFor( m => m.Owner )</dd>
+				<dt>@Html.DisplayNameFor( m => m.EndDate1 )</dt>
+				<dd>@Html.DisplayFor( m => m.EndDate1 )</dd>
+				<dt>@Html.DisplayNameFor( m => m.EndDate2 )</dt>
+				<dd>@Html.DisplayFor( m => m.EndDate2 )</dd>
+				<dt>@Html.DisplayNameFor( m => m.PhoneNumber )</dt>
+				<dd>@Html.DisplayFor( m => m.PhoneNumber )</dd>
+				<dt>@Html.DisplayNameFor( m => m.Status )</dt>
+				<dd>@Html.DisplayFor( m => m.Status )</dd>
+			</dl>
+		</div>
+	</div>
+
+	<div id="peccancys" class="clearfix">
+		@foreach ( TCTE.ViewModel.PeccancyInfo item in Model.PeccancyInfos )
+		{
+			<hr />
+			<dl class="dl-horizontal">
+				<dt>@Html.DisplayNameFor( m => m.PeccancyInfos[ 0 ].PlateNumber )</dt>
+				<dd>@Html.DisplayFor( m => item.PlateNumber )</dd>
+				<dt>@Html.DisplayNameFor( m => m.PeccancyInfos[ 0 ].Time )</dt>
+				<dd>@Html.DisplayFor( m => item.Time )</dd>
+				<dt>@Html.DisplayNameFor( m => m.PeccancyInfos[ 0 ].Address )</dt>
+				<dd>@Html.DisplayFor( m => item.Address )</dd>
+				<dt>@Html.DisplayNameFor( m => m.PeccancyInfos[ 0 ].Behavior )</dt>
+				<dd>@Html.DisplayFor( m => item.Behavior )</dd>
+				<dt>@Html.DisplayNameFor( m => m.PeccancyInfos[ 0 ].Money )</dt>
+				<dd>@Html.DisplayFor( m => item.Money )</dd>
+				<dt>@Html.DisplayNameFor( m => m.PeccancyInfos[ 0 ].Deduction )</dt>
+				<dd>@Html.DisplayFor( m => item.Deduction )</dd>
+			</dl>
+		}
+	</div>
+
+	<div class="modal" id="modalQueryDriver">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">请输入驾驶人身份证号码和档案号</h4>
+				</div>
+				@using ( Ajax.BeginForm( "GetDriverInfo", new AjaxOptions { HttpMethod = "post", LoadingElementId = "loading", OnSuccess = "querySuccess", OnFailure = "queryFailure" } ) )
+				{
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="personNo_driver">身份证号码</label>
+							<input type="text" class="form-control" id="personNo_driver" name="personNo" placeholder="身份证号码">
+						</div>
+						<div class="form-group">
+							<label for="archiveId_driver">档案号</label>
+							<input type="text" class="form-control" id="archiveId_driver" name="archiveId" placeholder="档案号">
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<span class="text-danger" style="display:none" id="failedRequest">驾驶员信息查询失败，请确认填写了正确信息</span>&nbsp;&nbsp;
+						<span class="fa fa-spin fa-circle-o-notch" style="display:none" id="loading"></span>&nbsp;&nbsp;
+						<input type="submit" class="btn btn-info " value="查询">
+						<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+					</div>
+					<div id="driverInfo" style="display:none">
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="modalApprove">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">接受预约，是否立即生成订单？</h4>
+				</div>
+				<div class="modal-footer">
+					@Html.ActionLink( "是", "ApproveAndPrePrepareToCreateOrder", new { id = ViewBag.PreOrder.Id }, new { @class = "btn btn-info" } )
+					@Html.ActionLink( "否", "ApproveButNotCreateOrder", new { id = ViewBag.PreOrder.Id }, new { @class = "btn btn-white" } )
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="modalRefuse">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">请输入拒绝预约的的理由</h4>
+				</div>
+				@using ( Html.BeginForm( "Refuse", "PreOrder", new { id=ViewBag.PreOrder.Id } ) )
+				{
+					<div class="modal-body">
+						<div class="form-group">
+							<textarea class="form-control" id="WhyFailure" name="WhyFailure"></textarea>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<input type="submit" class="btn btn-info " value="确定拒绝">
+						<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+
+}
+else
+{
+	@:没有违法信息
+	<hr />
+}
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script>
+	function querySuccess( data ) {
+		if ( data == "" ) {
+			queryFailure();
+			return;
+		}
+		var html = "<hr/>";
+		html += '<dl class="dl-horizontal">';
+		html += '<dt>姓名:</dt><dd>' + data.Name + '</dd>';
+		html += '<dt>准驾车型:</dt><dd>' + data.Level + '</dd>';
+		html += '<dt>驾驶人状态:</dt><dd>' + data.Status + '</dd>';
+		html += '<dt>发证机关:</dt><dd>' + data.Organization + '</dd>';
+		html += '<dt>正常累计积分:</dt><dd>' + data.Integral + '</dd>';
+		html += '<dt>联系电话:</dt><dd>' + data.Phone + '</dd>';
+		html += '<dt>初领日期:</dt><dd>' + data.StartDate + '</dd>';
+		html += '<dl>';
+		$( "#driverInfo" ).html( html ).show();
+	}
+	function queryFailure() {
+		$( "#driverInfo" ).hide();
+		$( "#failedRequest" ).show();
+		setTimeout( function () { $( "#failedRequest" ).hide() }, 3000 );
+	}
+</script>
+
+
+
+

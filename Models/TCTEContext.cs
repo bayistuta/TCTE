@@ -11,7 +11,7 @@ namespace TCTE.Models
 	{
 		static TCTEContext( )
 		{
-			Database.SetInitializer( new TCTEDBInitializerForTest( ) );
+            Database.SetInitializer(new TCTEDBInitializer());
 		}
 		public TCTEContext( )
 			: base( "TCTE" )
@@ -355,7 +355,8 @@ namespace TCTE.Models
                 new Function{ Name="业务员管理", Controller="SalesMan", Action="Index", Roles= roles_CompanyAdmin },
                 new Function{ Name="客户管理", Controller="Client", Action="Index", Roles= roles_CompanyAdmin },
                 new Function{ Name="订单管理", Controller="Order", Action="Index", Roles= roles_All },
-				new Function{ Name="订单统计", Controller="Order", Action="Count", Roles= roles_All }
+				new Function{ Name="订单统计", Controller="Order", Action="Count", Roles= roles_All },
+				new Function{ Name="预约管理", Controller="PreOrder", Action="Index", Roles= roles_CompanyAdmin }
             };
 			context.Functions.AddRange( functions );
 			context.SaveChanges( );

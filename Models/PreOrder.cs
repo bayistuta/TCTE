@@ -15,6 +15,9 @@ namespace TCTE.Models
 		[Display( Name = "车牌号" )]
 		public string PlateNumber { get; set; }
 
+		[Display( Name = "车架号" )]
+		public string VIN { get; set; }
+
 		[Display( Name = "号牌种类" )]
 		public string PlateType { get; set; }
 
@@ -52,6 +55,8 @@ namespace TCTE.Models
 		// FK
 
 		public int? OrderId { get; set; }
+
+		public int? CompanyId { get; set; }
 
 		// Navigation Properties
 

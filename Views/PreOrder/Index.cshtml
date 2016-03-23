@@ -1,0 +1,132 @@
+﻿@model IEnumerable<TCTE.Models.PreOrder>
+@using TCTE.Models.SystemType
+
+@{
+	ViewBag.Title = "预约管理";
+	Layout = "~/Views/Shared/_FormListLayout.cshtml";
+}
+
+@section query {
+	<form action="@Url.Action("Query")" method="post" id="queryForm">
+		<div class="form-group">
+			<label>
+				<input @(ViewBag.s == PreOrderStatus.WaitingApprove ? "checked" : "") type="radio" class="cbr" name="s" value="@PreOrderStatus.WaitingApprove">
+				待审核
+			</label>
+			<label>
+				<input @(ViewBag.s == PreOrderStatus.Approved ? "checked" : "") type="radio" class="cbr" name="s" value="@PreOrderStatus.Approved">
+				已受理但未派单
+			</label>
+		</div>
+	</form>
+	<hr />
+	<script>
+		$( document ).ready( function () {
+			$( ":radio[name=s]" ).change( function () {
+				$( "#queryForm" ).submit();
+			} );
+		} );
+
+	</script>
+}
+
+@section  ListHeader{
+	<th class="sorting_asc">
+		@Html.DisplayNameFor( model => model.PlateNumber )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.VIN )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.PlateType )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.Phone )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.Name )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.IDCardNumber )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.ArchiveNo )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.ServiceTime )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.ServiceAddress )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.PreOrderNumber )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.MemberLevel )
+	</th>
+	<th class="sorting">
+		@Html.DisplayNameFor( model => model.Status )
+	</th>
+	<th>
+		操作
+	</th>
+}
+@section ListBody{
+	@foreach ( var item in Model )
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor( a => item.PlateNumber )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.VIN )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.PlateType )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.Phone )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.Name )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.IDCardNumber )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.ArchiveNo )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.ServiceTime )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.ServiceAddress )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.PreOrderNumber )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.MemberLevel )
+			</td>
+			<td>
+				@Html.DisplayFor( a => item.Status )
+			</td>
+			<td style="white-space:nowrap">
+				@if ( item.Status == PreOrderStatus.WaitingApprove )
+				{
+					@Html.ActionLink( "处理", "Handle", new { id = item.Id }, new { @class = "btn btn-secondary btn-sm btn-icon icon-left" } )
+				}
+				else if ( item.Status == PreOrderStatus.Approved )
+				{
+					@Html.ActionLink( "派单", "ApproveAndPrePrepareToCreateOrder", new { id = item.Id }, new { @class = "btn btn-secondary btn-sm btn-icon icon-left" } )
+				}
+			</td>
+		</tr>
+	}
+}
+
+@section scripts{
+	<script>
+		$( "#link_AddData" ).hide();
+	</script>
+}

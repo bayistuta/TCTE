@@ -84,6 +84,12 @@ namespace TCTE.Controllers.Api
                 {
                     order.Status = Models.SystemType.OrderStatus.Ended;
                     order.EndTime = DateTime.Now;
+                    var preOrder = db.PreOrders.SingleOrDefault(po => po.OrderId == order.Id);
+                    //修改订单预约状态为结束
+                    if (preOrder != null)
+                    {
+                        preOrder.Status = Models.SystemType.PreOrderStatus.Completed;
+                    }
                     db.SaveChanges();
                     return Request.CreateResponse(HttpStatusCode.OK, new APIResultObject()
                     {

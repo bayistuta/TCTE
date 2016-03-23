@@ -139,6 +139,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Api\OrderController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\PreOrderController.cs" />
     <Compile Include="Controllers\SalesManController.cs" />
     <Compile Include="Controllers\Api\TerminalController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -1231,6 +1232,9 @@
     <Content Include="Views\User\ModifyPwd.cshtml" />
     <Content Include="Views\Order\Count.cshtml" />
     <Content Include="Views\Order\ViewOrderPeccancy.cshtml" />
+    <Content Include="Views\PreOrder\Index.cshtml" />
+    <Content Include="Views\PreOrder\Handle.cshtml" />
+    <Content Include="Views\PreOrder\ApproveAndPrePrepareToCreateOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
